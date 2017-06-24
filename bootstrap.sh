@@ -1,47 +1,11 @@
 #!/usr/bin/env bash
 
-BASE_PKGS=\
-  alex \
-  ctags \
-  curl \
-  fail2ban \
-  gcc \
-  git \
-  happy \
-  libcurl4-gnutls-dev \
-  libffi-dev \
-  libgmp-dev \
-  libpcre3-dev \
-  libpq-dev \
-  make \
-  postgresql \
-  python-software-properties \
-  ruby \
-  tmux \
-  ufw \
-  vim \
-  vim-scripts \
-  xz-utils \
-  zsh \
+BASE_PKGS='alex ctags curl fail2ban gcc git happy libcurl4-gnutls-dev libffi-dev libgmp-dev libpcre3-dev libpq-dev make postgresql python-software-properties ruby tmux ufw vim vim-scripts xz-utils zsh'
+SPECL_PKGS='apache2 apache2-doc mysql-client mysql-sandbox mysql-server mysql-workbench php php-xdebug vnc4server vncsnapshot xvnc4viewer' # netbeans
 
-SPECL_PKGS=\
-  apache2 \
-  apache2-doc \
-  mysql-client \
-  mysql-sandbox \
-  mysql-server \
-  mysql-workbench \
-  php \
-  php-xdebug \
-  vnc4server \
-  vncsnapshot \
-  xvnc4viewer \
-  # netbeans \
+PKGS="${BASE_PKGS} ${SPECL_PKGS}"
 
-PKGS=\
-  ${BASE_PKGS} \
-  ${SPECL_PKGS} \
-
+echo "-----> Installing Packages"
 apt-get update -q
 apt-get install -y -q ${PKGS}
 
