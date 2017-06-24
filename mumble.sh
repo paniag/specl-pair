@@ -1,5 +1,5 @@
 echo "-----> Installing mumble chat server"
-apt-get install mumble-server debconf-utils
+apt-get -y install mumble-server debconf-utils
 
 echo "-----> Configuring mumble chat server"
 debconf-set-selections <<EOF
