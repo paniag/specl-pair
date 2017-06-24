@@ -20,6 +20,7 @@ BASE_PKGS=\
   tmux \
   ufw \
   vim \
+  vim-scripts \
   xz-utils \
   zsh \
 
@@ -31,6 +32,11 @@ SPECL_PKGS=\
   mysql-server \
   mysql-workbench \
   php \
+  php-xdebug \
+  vnc4server \
+  vncsnapshot \
+  xvnc4viewer \
+  # netbeans \
 
 PKGS=\
   ${BASE_PKGS} \
@@ -81,3 +87,16 @@ ufw --force enable
 
 echo "-----> Hardening OpenSSH"
 cp /vagrant/config/sshd_config /etc/ssh/sshd_config
+
+VAGRANT_SSH=/home/vagrant/.ssh
+SSHDIR=/vagrant/.secret/ssh
+if [ -x "${SSHDIR}/id_rsa" ]; then
+  echo "-----> Add SSH key (RSA)"
+  mkdir -p ${VAGRANT_SSH}
+  chmod 0700 ${VAGRANT_SSH}
+  cp ${SSHDIR}/github.id_rsa ${VAGRANT_SSH}/
+  chmod 0600 ${VAGRANT_SSH}/github.id_rsa
+  chown -R vagrant:vagrant ${VAGRANT_SSH}
+  sudo -u vagrant ssh-agent -s
+  sudo -u vagrant ssh-add ${VAGRANT_SSH}/github.id_rsa
+fi
