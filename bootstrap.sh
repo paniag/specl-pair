@@ -1,7 +1,43 @@
 #!/usr/bin/env bash
 
+BASE_PKGS=\
+  alex \
+  ctags \
+  curl \
+  fail2ban \
+  gcc \
+  git \
+  happy \
+  libcurl4-gnutls-dev \
+  libffi-dev \
+  libgmp-dev \
+  libpcre3-dev \
+  libpq-dev \
+  make \
+  postgresql \
+  python-software-properties \
+  ruby \
+  tmux \
+  ufw \
+  vim \
+  xz-utils \
+  zsh \
+
+SPECL_PKGS=\
+  apache2 \
+  apache2-doc \
+  mysql-client \
+  mysql-sandbox \
+  mysql-server \
+  mysql-workbench \
+  php \
+
+PKGS=\
+  ${BASE_PKGS} \
+  ${SPECL_PKGS} \
+
 apt-get update -q
-apt-get install gcc libgmp-dev alex happy curl libpq-dev libcurl4-gnutls-dev libpcre3-dev libffi-dev make python-software-properties vim ctags git tmux ruby ufw fail2ban xz-utils zsh libpq-dev postgresql -y -q
+apt-get install -y -q ${PKGS}
 
 echo "-----> Installing Stack"
 curl -sSL https://get.haskellstack.org/ | sh
