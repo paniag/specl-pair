@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 if [ -d "$HOME/.oh-my-zsh" ]; then
   echo "-----> Oh-my-zsh already exists"
 else

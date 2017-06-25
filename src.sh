@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 echo '-----> Creating a source code directory'
 mkdir -p src
 
@@ -5,7 +7,7 @@ echo '-----> Installing Bazel'
 sudo mkdir -p /etc/apt/sources.list.d
 echo 'deb [arch=amd64] http://storage.googleapis.com/bazel-apt stable jdk1.8' | sudo tee /etc/apt/sources.list.d/bazel.list
 curl https://bazel.build/bazel-release.pub.gpg | sudo apt-key add -
-sudo apt-get update && sudo apt-get install bazel
+sudo apt-get update -q && sudo apt-get install -y -q bazel
 echo '> bazel version'
 bazel version
 cat >> src/WORKSPACE <<EOF
@@ -17,7 +19,7 @@ git_repository(
 EOF
 
 echo '-----> Installing Go'
-sudo apt-get install golang
+sudo apt-get install -y -q golang
 mkdir -p src/go/{bin,pkg,src}
 cat >> src/WORKSPACE <<EOF
 # Go integration
@@ -34,3 +36,10 @@ cat >> src/BUILD <<EOF
 load('@io_bazel_rules_go//go:def.bzl', 'go_prefix')
 go_prefix('go/src')
 EOF
+
+if [ -x ${HOME}/.ssh/github.id_rsa ]; then
+  echo '-----> Cloning specl'
+  git clone git@github.com:paniag/specl-1.0.git src/specl-1.0
+fi
+
+exit 0

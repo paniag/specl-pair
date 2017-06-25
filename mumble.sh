@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 echo "-----> Installing mumble chat server"
 sudo apt-get -y install mumble-server debconf-utils
 

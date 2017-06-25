@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 echo "-----> Using Sixarm git config"
 git clone https://github.com/SixArm/sixarm_git_gitconfig.git /tmp/sixarm-gitconfig
 mkdir -p $HOME/.gitconfig.d

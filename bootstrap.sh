@@ -10,16 +10,10 @@ echo "PKGS='${PKGS}'"
 sudo apt-get update -q
 sudo apt-get install -y -q ${PKGS}
 
-echo "-----> Installing Stack"
-curl -sSL https://get.haskellstack.org/ | sudo sh
-
-echo "-----> Setting up GHC"
-sudo stack setup
-
 echo "-----> Saving system tmux.conf"
 sudo cp /vagrant/config/tmux.conf /etc
 
-if hash wemux 2>/dev/null; then
+if hash wemux 2> /dev/null; then
   echo "-----> Wemux detected"
 else
   echo "-----> Installing wemux"
@@ -36,13 +30,13 @@ else
 fi
 
 echo "-----> Adding pairing scripts"
-sudo mkdir -p $HOME/bin
-sudo cp /vagrant/user-scripts/* $HOME/bin
+sudo mkdir -p /root/bin
+sudo cp /vagrant/user-scripts/* /root/bin
 
 echo "-----> Creating user 'friend'"
 sudo adduser friend
-echo "wemux pair; exit" | sudo tee /home/friend/.bash_profile > /dev/null
-sudo chmod 0644 /home/friend/.bash_profile
+echo "wemux pair; exit" | sudo -u friend tee /home/friend/.bash_profile > /dev/null
+sudo -u friend chmod 0644 /home/friend/.bash_profile
 
 echo "-----> Firewalling everything except SSH and Mumble"
 sudo ufw default deny incoming
@@ -54,14 +48,17 @@ sudo ufw --force enable
 
 echo "-----> Hardening OpenSSH"
 sudo cp /vagrant/config/sshd_config /etc/ssh/sshd_config
+sudo service ssh reload
 
-SSHDIR=/vagrant/.secret/ssh
-if [ -x "${SSHDIR}/id_rsa" ]; then
+KEYDIR=/vagrant/.secret/ssh
+if [ -x "${KEYDIR}/github.id_rsa" ]; then
   echo "-----> Add SSH key (RSA)"
-  mkdir -p .ssh
-  chmod 0700 .ssh
-  cp ${SSHDIR}/github.id_rsa .ssh/
-  chmod 0600 .ssh/github.id_rsa
+  mkdir -p ${HOME}/.ssh
+  chmod 0700 ${HOME}/.ssh
+  cp ${KEYDIR}/github.id_rsa ${HOME}/.ssh/
+  chmod 0600 ${HOME}/.ssh/github.id_rsa
+  cp ${KEYDIR}/github.id_rsa.pub ${HOME}/.ssh/
+  chmod 0644 ${HOME}/.ssh/github.id_rsa.pub
   ssh-agent -s
-  ssh-add .ssh/github.id_rsa
+  ssh-add ${HOME}/.ssh/github.id_rsa.pub
 fi
