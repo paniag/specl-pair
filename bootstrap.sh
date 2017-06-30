@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-BASE_PKGS='alex ctags curl fail2ban gcc git happy libcurl4-gnutls-dev libffi-dev libgmp-dev libpcre3-dev libpq-dev make postgresql python-software-properties ruby tmux ufw vim vim-scripts xz-utils zsh'
+BASE_PKGS='alex ctags curl expect fail2ban gcc git happy libcurl4-gnutls-dev libffi-dev libgmp-dev libpcre3-dev libpq-dev make postgresql python-software-properties ruby tmux ufw vim vim-scripts xz-utils zsh'
 SPECL_PKGS='apache2 apache2-doc php php-xdebug vnc4server vncsnapshot xvnc4viewer' # netbeans
 
 PKGS="${BASE_PKGS} ${SPECL_PKGS}"
@@ -51,14 +51,22 @@ sudo cp /vagrant/config/sshd_config /etc/ssh/sshd_config
 sudo service ssh reload
 
 KEYDIR=/vagrant/.secret/ssh
-if [ -x "${KEYDIR}/github.id_rsa" ]; then
+if [ -e "${KEYDIR}/github.id_rsa" ] &&
+   [ -e "${KEYDIR}/github.id_rsa.pub" ] &&
+   [ -e "${KEYDIR}/github.id_rsa.passphrase" ]; then
   echo "-----> Add SSH key (RSA)"
   mkdir -p ${HOME}/.ssh
   chmod 0700 ${HOME}/.ssh
   cp ${KEYDIR}/github.id_rsa ${HOME}/.ssh/
   chmod 0600 ${HOME}/.ssh/github.id_rsa
   cp ${KEYDIR}/github.id_rsa.pub ${HOME}/.ssh/
-  chmod 0644 ${HOME}/.ssh/github.id_rsa.pub
-  ssh-agent -s
-  ssh-add ${HOME}/.ssh/github.id_rsa.pub
+  chmod 0600 ${HOME}/.ssh/github.id_rsa.pub
+  eval $(ssh-agent -s)
+  source ${KEYDIR}/github.id_rsa.passphrase
+  expect < <(cat <<EOF
+    spawn ssh-add ${HOME}/.ssh/github.id_rsa.pub
+    expect "Enter passphrase for ${HOME}/.ssh/github.id_rsa.pub: "
+    send "${GITHUB_RSA_PASSPHRASE}"
+EOF
+  )
 fi

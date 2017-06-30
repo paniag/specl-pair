@@ -74,6 +74,14 @@ export PATH=$(stack path --bin-path --verbosity silent)
 
 # ssh
 # export SSH_KEY_PATH="~/.ssh/dsa_id"
+eval $(ssh-agent -s)
+source ${KEYDIR}/github.id_rsa.passphrase
+expect < <(cat <<EOF
+  spawn ssh-add ${HOME}/.ssh/github.id_rsa.pub
+  expect "Enter passphrase for ${HOME}/.ssh/github.id_rsa.pub: "
+  send "${GITHUB_RSA_PASSPHRASE}"
+EOF
+)
 
 if [[ -z $TMUX ]]
 then

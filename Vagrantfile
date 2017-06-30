@@ -6,17 +6,17 @@ VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "bento/ubuntu-16.04"
-  config.vm.provision :shell, :path => "mysql.sh", :privileged => false
-  config.vm.provision :shell, :path => "bootstrap.sh", :privileged => false
-  config.vm.provision :shell, :path => "mumble.sh", :privileged => false
-  config.vm.provision :shell, :path => "zsh.sh", :privileged => false
-  config.vm.provision :shell, :path => "git.sh", :privileged => false
-  config.vm.provision :shell, :path => "src.sh", :privileged => false
-  config.vm.provision :shell, :path => "stack.sh", :privileged => false
-  config.vm.provision :shell, :path => "haskell-vim-now.sh", :privileged => false  # deps: stack
+  config.vm.provision "mysql", type: "shell", privileged: false, path: "mysql.sh"
+  config.vm.provision "bootstrap", type: "shell", privileged: false, path: "bootstrap.sh"
+  config.vm.provision "mumble", type: "shell", privileged: false, path: "mumble.sh"
+  config.vm.provision "zsh", type: "shell", privileged: false, path: "zsh.sh"
+  config.vm.provision "git", type: "shell", privileged: false, path: "git.sh"
+  config.vm.provision "src", type: "shell", privileged: false, path: "src.sh"
+  config.vm.provision "stack", type: "shell", privileged: false, path: "stack.sh"
+  config.vm.provision "haskell-vim-now", type: "shell", privileged: false, path: "haskell-vim-now.sh"  # deps: stack
   # The update seems to trigger other packages that expect interactive installation,
   # so disabling for now.
-  # config.vm.provision :shell, :path => "upgrade.sh", :privileged => false
+  # config.vm.provision "upgrade-packages", type: shell, path: "upgrade.sh", privileged: false
   config.vm.network :forwarded_port, host: 8181, guest: 80
   config.vm.network :forwarded_port, host: 43306, guest: 3306
 
